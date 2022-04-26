@@ -56,7 +56,7 @@ const Navigation = ({ children }) => {
           </div>
         </div>
       </div>
-      <main className="p-2">{children}</main>
+      <main className="w-[100%]">{children}</main>
     </div>
   );
 };

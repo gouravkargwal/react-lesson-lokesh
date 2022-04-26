@@ -1,40 +1,77 @@
 import React, { useState } from "react";
+import { useFormik } from "formik";
 
 const Form = () => {
-  const [data, setData] = useState({});
-
-  const handleInput = (e) => {
-    setData((prevState) => {
-      return { ...prevState, [e.target.name]: e.target.value };
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(data);
-  };
-
+  const formik = useFormik({
+    initialValues: { name: "", email: "", channel: "" },
+    onSubmit: (values) => {
+      console.log(values);
+    },
+    validate: (values) => {
+      let errors = {};
+      if (!values.name) {
+        errors.name = "Required";
+      }
+      if (!values.email) {
+        errors.email = "Required";
+      } else if (
+        !/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          values.email
+        )
+      ) {
+        errors.email = "Invalid Email Format";
+      }
+      if (!values.channel) {
+        errors.channel = "Required";
+      }
+      return errors;
+    },
+  });
+  console.log(formik.errors);
   return (
     <>
-      <form className="bg-slate-600 p-10 flex flex-col items-center">
-        <div className="m-2 p-2 grid grid-cols-2 w-[20%]">
+      <form
+        className="bg-slate-600 flex flex-col h-[100%] justify-evenly"
+        onSubmit={formik.handleSubmit}
+      >
+        <div className="flex flex-row">
           <label>Name</label>
-          <input type="text" onChange={handleInput} name="name" />
-        </div>
-        <div>
-          <label>Age</label>
-          <input type="number" onChange={handleInput} name="age" />
+          <input
+            type="text"
+            name="name"
+            onChange={formik.handleChange}
+            value={formik.values.name}
+          />
+          {formik.errors.name ? (
+            <div className="text-red-400">{formik.errors.name}</div>
+          ) : null}
         </div>
         <div>
           <label>Email</label>
-          <input type="email" onChange={handleInput} name="email" />
+          <input
+            type="email"
+            name="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+          />
+          {formik.errors.email ? (
+            <div className="text-red-400">{formik.errors.email}</div>
+          ) : null}
         </div>
         <div>
-          <label>Password</label>
-          <input type="password" onChange={handleInput} name="password" />
+          <label>Channel</label>
+          <input
+            type="text"
+            name="channel"
+            onChange={formik.handleChange}
+            value={formik.values.channel}
+          />
+          {formik.errors.channel ? (
+            <div className="text-red-400">{formik.errors.channel}</div>
+          ) : null}
         </div>
         <div>
-          <input type="submit" onClick={handleSubmit} />
+          <input type="submit" className="bg-gray-400" />
         </div>
       </form>
     </>
